@@ -7,7 +7,7 @@
 		die("Acess Denied");
 
 	// Fetch Unix time and format it in human time
-	function getmicrotime()
+	function getmicrotime() \\From PHP manual
 	{
 		list($usec,$sec) = explode(" ",microtime());
 		return((float)$usec + (float)$sec);
@@ -47,6 +47,51 @@
 			return $result;
 		}
 	}
+	
+	function fullscreen_message($title, $text, $redirect="") // used for status or error messages
+{
+	global $template;
+	global $config;
+	global $userdata;
+	global $num_queries;
+	global $base_dir;
+	global $link_dir;
+	
+	if($redirect)
+		header("Refresh: 2;URL=".$config['board_url']."/".$redirect);
+	$template -> assign(array( // leaving common data in this because it can be called before it's assigned (i.e. from the common file itself)
+		"Y" => date("Y"),
+		"Mo" => date("n"),
+		"D" => date("j"),
+		"H" => date("G"),
+		"Mi" => date("i"),
+		"S" => date("s"),
+		"DateTime" => date("l, F jS, Y, g:i:s A"),
+		"BoardName" => $config['board_name'],
+		"BoardURL" => $link_dir,
+		"SecondName" => $title,
+		"StyleLoc" => $userdata['user_current_layer'],
+		"StyleSheetLoc" => $link_dir."/templates/".$userdata['user_current_layer']."/".$userdata['user_current_layer'].".css",
+		"UserData" => $userdata,
+		"LinkDir" => $link_dir,
+		"NumQueries" => $num_queries,
+		"GenTime" => gentime(),
+		"Message" => $text)
+	);
+	$template -> display(style_check()."/fullscreen_message.tpl");
+	exit();
+}
+
+function fullscreen_die($errormsg) // quick wrapper to fullscreen_message, die replacement
+{
+	global $template;
+	global $config;
+	global $userdata;
+	global $num_queries;
+	
+	return fullscreen_message("Error", $errormsg);
+}
+
 	
 	
 	
