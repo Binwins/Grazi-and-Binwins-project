@@ -49,7 +49,7 @@
 	}
 	
 	function fullscreen_message($title, $text, $redirect="") // used for status or error messages
-{
+	{
 	global $template;
 	global $config;
 	global $userdata;
